@@ -1,0 +1,14 @@
+/home/agaano/Desktop/Projects/skparser/bin/Debug/net8.0/skparser
+/home/agaano/Desktop/Projects/skparser/bin/Debug/net8.0/skparser.deps.json
+/home/agaano/Desktop/Projects/skparser/bin/Debug/net8.0/skparser.runtimeconfig.json
+/home/agaano/Desktop/Projects/skparser/bin/Debug/net8.0/skparser.dll
+/home/agaano/Desktop/Projects/skparser/bin/Debug/net8.0/skparser.pdb
+/home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/skparser.GeneratedMSBuildEditorConfig.editorconfig
+/home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/skparser.AssemblyInfoInputs.cache
+/home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/skparser.AssemblyInfo.cs
+/home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/skparser.csproj.CoreCompileInputs.cache
+/home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/skparser.dll
+/home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/refint/skparser.dll
+/home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/skparser.pdb
+/home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/skparser.genruntimeconfig.cache
+/home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/ref/skparser.dll
