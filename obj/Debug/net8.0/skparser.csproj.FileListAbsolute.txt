@@ -12,3 +12,4 @@
 /home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/skparser.pdb
 /home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/skparser.genruntimeconfig.cache
 /home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/ref/skparser.dll
+/home/agaano/Desktop/Projects/skparser/obj/Debug/net8.0/skparser.sourcelink.json

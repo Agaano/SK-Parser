@@ -10,6 +10,8 @@ string Format(string? str) {
 //Функция старта
 async void Start() {
     HttpClient client = new();
+
+    //здесь получаем кол-во компаний
     HttpResponseMessage responseMessage = await client.GetAsync("https://navigator.sk.ru/navigator/api/overall/company_stat");
     ResponseJsonCompanyCountClass? response1 = JsonSerializer.Deserialize<ResponseJsonCompanyCountClass>(await responseMessage.Content.ReadAsStreamAsync());
     
@@ -44,6 +46,7 @@ async void Start() {
     writer.Write("Номер, ");
     writer.Write("ИНН, ");
     writer.Write("ОРН, ");
+    writer.Write("ОГРН, ");
     writer.Write("Юр.лицо, ");
     writer.Write("Название стартапа, ");
     writer.Write("Описание стартапа, ");
@@ -51,7 +54,10 @@ async void Start() {
     writer.Write("ФИО Директора, ");
     writer.Write("Сайт, ");
     writer.Write("Отрасль, ");
-    writer.Write("Контакты \n");
+    writer.Write("Электронная почта 1,");
+    writer.Write("Электронная почта 2,");
+    writer.Write("Номер телефона 1,");
+    writer.Write("Номер телефона 2\n");
 
     //проходимся по каждой компании
     foreach (CompanyClass company in json?.companies) {
@@ -63,6 +69,7 @@ async void Start() {
             writer.Write(id + ", ");
             writer.Write(Format(company.inn) + ", ");
             writer.Write(Format(company.orn) + ", ");
+            writer.Write(Format(company.ogrn) + ", ");
             writer.Write(Format(company.full_name?.ru) + ", ");
             writer.Write(Format(project.name_ru) + ", ");
             writer.Write(Format(project.description_ru) + ", ");
@@ -70,7 +77,10 @@ async void Start() {
             writer.Write(Format(company.founders?[0]) + ", ");
             writer.Write(Format(company.site) + ", ");
             writer.Write(Format(company.company_cluster?.name_ru) + ", ");
-            writer.Write(Format(company.email?.Length > 0 ? company.email?[0] : null) + "\n");
+            writer.Write(Format(company.email?.Length > 0 ? company.email?[0] : null) + ", ");
+            writer.Write(Format(company.email?.Length > 1 ? company.email?[1] : null) + ", ");
+            writer.Write(Format(company.phones?.Length > 0 ? company.phones?[0] : null) + ", ");
+            writer.Write(Format(company.phones?.Length > 1 ? company.phones?[1] : null) + "\n");
             id++;
         }
     }
@@ -103,12 +113,13 @@ public class CompanyClass {
     public LangClass? description {get; set;}
     public string[]? email {get; set;}
     public string? orn {get; set;}
+    public string? ogrn {get; set;}
     public string? inn {get; set;}
     public string[]? founders {get; set;}
     public CompanyClusterClass? company_cluster {get; set;}
     public ProjectClass[]? projects {get; set;}
     public string? site {get; set;}
-    
+    public string[]? phones {get; set;}
 }
 public class CompanyClusterClass {
     public string? name_ru {get; set;}
