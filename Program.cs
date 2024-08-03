@@ -1,42 +1,19 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization.Metadata;
 
-string FindInnerString(string str, string start, string end) {
-    int startIndex = str.IndexOf(start);
-    if (startIndex == -1) 
-        return "";
-    string restString = str[(startIndex + start.Length)..];
-    int endIndex = restString.IndexOf(end);
-    if (endIndex == -1) 
-        return "";
-    string innerString = restString[0..endIndex];
-    // Console.WriteLine($"End Index: {endIndex} \nEnd Char: {str[endIndex]} \nStart Index: {startIndex} \nStart Char: {str[startIndex]} \nInnerString: {innerString}");
-    return innerString;
-} 
-
-string[] FindAllInnerStrings(string str, string start, string end) {
-    string st = str;
-    string innerString = "11";
-    List<string> strings = new();
-    while (innerString.Length > 0) {
-        innerString = FindInnerString(st, start, end);
-        if (innerString.Length > 0) strings.Add(innerString);
-        st = st[st.IndexOf(innerString)..];
-    }
-    return [.. strings];
-}
-
+//Функция форматирования, каждое поле перед тем как вставить в csv надо привести в порядок
+//конкретно здесь убираются все переносы строк, одинарные кавычки заменяются на двойные и по бокам от поля ставятся кавычки
 string Format(string? str) {
     return $"\"{str?.Replace("\n", "").Replace("\r", "").Replace("\"", "\"\"")}\"";
 }
 
+//Функция старта
 async void Start() {
     HttpClient client = new();
     HttpResponseMessage responseMessage = await client.GetAsync("https://navigator.sk.ru/navigator/api/overall/company_stat");
     ResponseJsonCompanyCountClass? response1 = JsonSerializer.Deserialize<ResponseJsonCompanyCountClass>(await responseMessage.Content.ReadAsStreamAsync());
+    
+    //Вот здесь создаётся тело для запроса
     HttpContent content = new StringContent(
         JsonSerializer.Serialize(new {
             filter=new {
@@ -49,13 +26,21 @@ async void Start() {
     );
     using HttpRequestMessage requestMessage = new(HttpMethod.Post, "https://navigator.sk.ru/navigator/api/search/only_companies/");
     requestMessage.Content = content;
+    //Добавляются куки файлы
     requestMessage.Headers.Add("Cookie", "navigator_session=eyJfZnJlc2giOmZhbHNlLCJ1c2VyX2lkIjowfQ.Zq1vfA.84AqtPTFijINEGUM2FnoSC51gRg; navigator_session=eyJfZnJlc2giOmZhbHNlLCJ1c2VyX2lkIjowfQ.Zq1m2A.JAi9wQ0xCzujJftPkl0Tip9Oa1c; navigator_session_logs=c789d6021eddb5247f11226f4c007d3c; sk_lang=ru");
+    
+    //запрос отправляется
     HttpResponseMessage response = await client.SendAsync(requestMessage);
+    //преобразуется в строку
     string stream = await response.Content.ReadAsStringAsync();
+    
+    //строка преобразуется в полноценный объект с которым удобно работать
     ResponseJsonClass? json = JsonSerializer.Deserialize<ResponseJsonClass>(stream);
     Console.WriteLine(stream);
     int id = 1;
     using StreamWriter writer = new("./table.csv");
+
+    //заголовок для csv таблицы
     writer.Write("Номер, ");
     writer.Write("ИНН, ");
     writer.Write("ОРН, ");
@@ -67,9 +52,14 @@ async void Start() {
     writer.Write("Сайт, ");
     writer.Write("Отрасль, ");
     writer.Write("Контакты \n");
+
+    //проходимся по каждой компании
     foreach (CompanyClass company in json?.companies) {
+        //если в компании нет проектов то пропускаем
         if (company.projects == null) continue;
+        //проходимся по каждому проекту компании
         foreach (ProjectClass project in company.projects) {
+            //заполняем поля
             writer.Write(id + ", ");
             writer.Write(Format(company.inn) + ", ");
             writer.Write(Format(company.orn) + ", ");
@@ -87,11 +77,13 @@ async void Start() {
     writer.Close();
 }
 
-
+//запуск
 Start();
 Console.ReadKey();
 //инн, орн, юр.лицо, название стартапа, описание стартапа, описание компании, фио директора, сайт, отрасль, контакты (общие), электронная почта, телефон, другое
 
+//дальше идут классы, в них содержатся поля для преобразования из JSON строки в полноценные объекты, в будущем если захочешь парсить другие данные 
+//смотри на название поля в JSON тексте и переписывай его точь в точь
 public class ResponseJsonCompanyCountClass {
     public int? company_count {get; set;}
 }
